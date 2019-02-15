@@ -158,7 +158,7 @@ LogHandler.attributes.add('gameLog', {
 
 LogHandler.prototype.initialize = function() {
     // initial values
-    this.log =  this.gameLog.resources; //JSON.parse(document.getElementById('storage').innerHTML); //
+    this.log =  JSON.parse(document.getElementById('storage').innerHTML); //this.gameLog.resources; //
     this.line = 0;
 
     // global events
