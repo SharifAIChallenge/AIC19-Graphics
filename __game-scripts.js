@@ -21,7 +21,7 @@ Ap.prototype.apStatus = function(ap) {
         this.initMaxAP();
         this.maxAPDefined = true;
     }
-
+        
     if (this.entity.name == 'Hero AP') {
         this.entity.element.height = this.barHeight * ap[1] / this.maximumAP;
     }
@@ -39,9 +39,9 @@ GameHandler.prototype.initialize = function() {
     // initial values
     this.turn = 0;
     this.play = true;
-
+    
     this.setTeamNames();
-
+    
     // global events
     this.app.on('logHandler->gameHandler::handleLine', (line) => this.handleLine(line), this);
     this.app.on('initHandler->gameHandler::initCompleted', () => this.app.fire('gameHandler->logHandler::goToNextTurn'), this);
@@ -127,9 +127,9 @@ GameHandler.prototype.setTeamNames = function() {
     var string = window.location.href;
     var team1 = '',team2 = '';
     string = decodeURI(string);
-    var x1 = string.indexOf('first_team=');
-    var x2 = string.indexOf('&second_team=');
-
+    var x1 = string.indexOf('second_team=');
+    var x2 = string.indexOf('&first_team=');
+    
     if (x1 == -1){
         return;
     }
@@ -139,8 +139,8 @@ GameHandler.prototype.setTeamNames = function() {
     team2 = team2.split('+').join(' ');
 
     team1 = string.slice(x2 + 13, string.length);
-    team1 = team1.split('+').join(' ');
-
+    team1 = team1.split('+').join(' ');  
+    
     this.app.root.findByName('Team 1 txt').element.text = team1;
     this.app.root.findByName('Team 1 Text').element.text = team1;
     this.app.root.findByName('Team 2 txt').element.text = team2;
@@ -158,9 +158,9 @@ LogHandler.attributes.add('gameLog', {
 
 LogHandler.prototype.initialize = function() {
     // initial values
-    this.log =  JSON.parse(document.getElementById('storage').innerHTML); //this.gameLog.resources; //
+    this.log = JSON.parse(document.getElementById('storage').innerHTML); //this.gameLog.resources;
     this.line = 0;
-
+    
     // global events
     this.app.on('gameHandler->logHandler::goToNextTurn', () => this.goToNextTurn(), this);
 };
@@ -266,7 +266,7 @@ InitMap.prototype.initMap = function(map, content) {
     var ground = this.entity.findByName('Ground');
     var blocks = this.entity.findByName('Blocks');
     var floormodel = this.groundModel;
-
+    
     for(var index = 0; index < content.length; index++) {
         var x = this.getXZ(map,index)[0];
         var z = this.getXZ(map,index)[1];
@@ -343,14 +343,14 @@ InitMap.prototype.addToMap = function(name, model, parent, x, y, z) {
     add.addComponent('model');
     add.model.type = 'asset';
     add.model.asset = model;
-
+    
     // performance
     add.model.batchGroupId = 100002;
     if (add.name != 'wall') {
         add.model.castShadows = false;
         add.model.castShadowsLightmap = false;
     }
-
+    
     add.setPosition(x, y, z);
     parent.addChild(add);
 };
@@ -364,7 +364,7 @@ InitMap.prototype.getXZ = function(map, index) {
     return [z, x];
 };
 
-InitMap.prototype.getSize = function(map) {
+InitMap.prototype.getSize = function(map) {    
     return map.rowNum;
 };
 
@@ -376,7 +376,7 @@ InitHeroes.prototype.initialize = function() {
     // global events
     this.app.on('initHandler->initHeroes::initHeroes', (leftHeroes, rightHeroes) => this.initHeroes(leftHeroes.concat(rightHeroes)), this);
 };
-
+    
 InitHeroes.prototype.initHeroes = function(heroes) {
     for (i = 0; i < heroes.length; i++) {
         // setting entity properties
@@ -385,11 +385,11 @@ InitHeroes.prototype.initHeroes = function(heroes) {
         unit = unit.clone();
         unit.enabled = true;
         unit.name = unit.name + heroes[i].id;
-
+        
         var xPos = (heroes[i].column) * 4 + 2;
         var yPos = (heroes[i].row) * 4 + 2;
         unit.setLocalPosition(xPos, 0, yPos);
-
+        
         this.entity.addChild(unit);
     }
 };
@@ -402,14 +402,14 @@ var ActionHandler = pc.createScript('actionHandler');
 ActionHandler.prototype.initialize = function() {
     // initial values
     this.phase = '';
-
+    
     // global events
     this.app.on('gameHandler->actionHandler::moveHeroes', (data) => {this.phase = 'move'; this.moveHeroes(data);}, this);
     this.app.on('gameHandler->actionHandler::startActions', (data) => this.startActions(data), this);
     this.app.on('gameHandler->actionHandler::respawnHeroes', (data) => this.respawnHeroes(data), this);
     this.app.on('rotation->actionHandler::endRotation', (data) => {
         if (this.phase == 'move') {
-            this.app.fire('actionHandler->movement::moveHero', data);
+            this.app.fire('actionHandler->movement::moveHero', data);    
         }
         if (this.phase == 'attack') {
             this.app.fire('actionHandler->attack::attack', data);
@@ -425,16 +425,16 @@ ActionHandler.prototype.moveHeroes = function(data) {
     var eventCount = 0;
     for (i = 0; i < data.length; i++) {
         if (data[i] != 'n') {
-            eventCount++;
+            eventCount++;   
         }
     }
     this.app.fire('*->counter::countEvents', eventCount);
-
+    
     for (i = 0; i < data.length; i++) {
         if (data[i] != 'n') {
             this.app.fire('actionHandler->rotation::rotate', {id: i, dir: data[i], destination: this.dirToDestination(data[i])}, this);
         }
-    }
+    }  
 };
 
 ActionHandler.prototype.dirToDestination = function(dir) {
@@ -630,7 +630,7 @@ Rotation.prototype.initialize = function() {
     this.direction = '';
     this.destinationX = 0;
     this.destinationY = 0;
-
+    
     // global events
     this.app.on('actionHandler->rotation::rotate', (data) => {
         if (this.entity.name[this.entity.name.length - 1] == data.id) {
@@ -684,7 +684,7 @@ Rotation.prototype.getRotation = function(quat) {
 var Movement = pc.createScript('movement');
 
 Movement.attributes.add('moveTime', {
-    type: 'number'
+    type: 'number' 
 });
 
 Movement.attributes.add('movementCorrection', {
@@ -697,7 +697,7 @@ Movement.prototype.initialize = function() {
     this.isWalking = false;
     this.direction = '';
     this.time = 0;
-
+    
     // global events
     this.app.on('actionHandler->movement::moveHero', (data) => {
         if (this.entity.name[this.entity.name.length - 1] == data.id) {
@@ -716,7 +716,7 @@ Movement.prototype.update = function(dt) {
         this.pos0 = new pc.Vec3(this.entity.getPosition().x, this.entity.getPosition().y, this.entity.getPosition().z);
         this.actionMove = false;
         this.isWalking = true;
-
+        
     }
     else if (this.isWalking && this.time < this.moveTime) {
         pos = this.entity.getPosition();
@@ -779,7 +779,7 @@ Lasermaker.attributes.add ('animationTime', {
 });
 
 Lasermaker.attributes.add('Laser',{
-    type : 'entity'
+    type : 'entity' 
 });
 
 
@@ -788,11 +788,11 @@ Lasermaker.attributes.add('Laser',{
 Lasermaker.prototype.initialize = function() {
     var self =this;
     laser = self.entity.findByName('laserWithAnimation');
-
+   
     this.app.on ('*->lasermaker :: laser', (data) => { //data includes hero id, destinationX and destinationY
         var parentEntity = pc.Entity;
         parentEntity = this.entity;
-
+        
         if (parentEntity.name[parentEntity.name.length - 1] == data.id) {
             laser.enabled = true;
             this.makeLaser (data);
@@ -802,7 +802,7 @@ Lasermaker.prototype.initialize = function() {
 
 // update code called every frame
 Lasermaker.prototype.update = function(dt) {
-
+    
 };
 Lasermaker.prototype.makeLaser = function (data) {
     var distanceX = this.getXZ(data.destinationX, data.destinationY) [0];
@@ -829,7 +829,7 @@ Lasermaker.prototype.makeLaser = function (data) {
 
 
 Lasermaker.prototype.getXZ = function (x,y) {
-
+    
     var mapX = 4 * y ;
     var mapZ = 4 * x ;
     return [mapX, mapZ];
@@ -931,8 +931,8 @@ End.prototype.initialize = function() {
         }
         if (this.entity.name == 'Result') {
             switch (winner) {
-                case 0: this.entity.element.text = 'TEAM 1 WINS!'; break;
-                case 1: this.entity.element.text = 'TEAM 2 WINS!'; break;
+                case 1: this.entity.element.text = 'TEAM 1 WINS!'; break;
+                case 0: this.entity.element.text = 'TEAM 2 WINS!'; break;
                 case -1: this.entity.element.text = 'DRAW!'; break;
                 default: break;
             }
@@ -947,7 +947,7 @@ var Respawn = pc.createScript('respawn');
 Respawn.prototype.initialize = function() {
     this.app.on('actionHandler->respawn::respawnHeroes', (data) => this.respawnHeroes(data), this);
 };
-
+    
 Respawn.prototype.respawnHeroes = function(data) {
     if (this.entity.name[this.entity.name.length - 1] == data.id) {
         var xPos = (data.column) * 4 + 2;
@@ -958,7 +958,7 @@ Respawn.prototype.respawnHeroes = function(data) {
             this.alpha = 0.4;
             meshs[i].setParameter("material_opacity", 1);
         }
-    }
+    }  
 };
 
 
@@ -988,11 +988,11 @@ Attack.attributes.add('attackTime', {
     type: 'number'
 });
 Attack.attributes.add('soldierAttackTime2', {
-   type: 'number'
+   type: 'number' 
 });
 
 Attack.attributes.add('soldierAttackTime3', {
-   type: 'number'
+   type: 'number' 
 });
 
 Attack.attributes.add('soldierAttackTime4', {
@@ -1001,10 +1001,10 @@ Attack.attributes.add('soldierAttackTime4', {
 
 Attack.prototype.initialize = function() {
     this.animation = this.entity.script.animations;
-
+    
     this.app.on('actionHandler->attack::attack', (data) => {
         if (this.entity.name[this.entity.name.length - 1] == data.id) {
-            if (this.entity.name.substring(0, this.entity.name.length - 1) == "Slayer" ||
+            if (this.entity.name.substring(0, this.entity.name.length - 1) == "Slayer" || 
             this.entity.name.substring(0, this.entity.name.length - 1) == "Red Demon") {
             if (this.destinationX > 3 || this.destinationY > 3 ) {
                 console.error("attack4");
@@ -1019,7 +1019,7 @@ Attack.prototype.initialize = function() {
             } else {
                 this.animation.setState('attack', 0.2);
                 setTimeout(this.endAttack, this.attackTime * 1000, this);
-            }
+            }  
         } else {
             this.animation.setState('attack', 0.2);
             setTimeout(this.endAttack, this.attackTime * 1000, this);
@@ -1029,14 +1029,14 @@ Attack.prototype.initialize = function() {
         }
         if (this.entity.name.substring(0, this.entity.name.length - 1 ) ==  "Ancient Warrior" ||
                this.entity.name.substring(0, this.entity.name.length - 1 ) ==  "Mechanical Golem" ||
-            this.entity.name.substring(0, this.entity.name.length - 1 ) ==  "Mystic" ||
+            this.entity.name.substring(0, this.entity.name.length - 1 ) ==  "Mystic" ||  
             this.entity.name.substring(0, this.entity.name.length - 1 ) ==  "Ancient Queen"  ) {
             var laserData = {
                 id : data.id ,
                 destinationX : data.destinationX,
                 destinationY : data.destinationY
             };
-
+            
             this.app.fire('*->lasermaker :: laser' , laserData);
             }
     }, this);
@@ -1045,7 +1045,7 @@ Attack.prototype.initialize = function() {
 Attack.prototype.endAttack = function(self) {
     self.animation.setState('idle');
     self.app.fire('*->counter::endEvent');
-
+    
 };
 
 var InitGameConstants=pc.createScript("initGameConstants");InitGameConstants.attributes.add("maxAP",{type:"number"}),InitGameConstants.prototype.initialize=function(){this.app.on("variableHandler->gameConstants::initMaxAP",function(t){this.maxAP=t},this)},InitGameConstants.prototype.update=function(t){};// console.js
@@ -1080,3 +1080,4 @@ Console.prototype.getHeroLocation = function(heroName) {
     var location = this.app.root.findByName(heroName).getLocalPosition();
     return [(location.x / 4) >> 0, (location.z / 4) >> 0];
 };
+
