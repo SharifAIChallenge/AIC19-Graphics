@@ -23,10 +23,10 @@ Ap.prototype.apStatus = function(ap) {
     }
         
     if (this.entity.name == 'Hero AP') {
-        this.entity.element.height = this.barHeight * ap[1] / this.maximumAP;
+        this.entity.element.height = this.barHeight * ap[0] / this.maximumAP;
     }
     if (this.entity.name == 'Enemy AP') {
-        this.entity.element.height = this.barHeight * ap[0]  / this.maximumAP;
+        this.entity.element.height = this.barHeight * ap[1]  / this.maximumAP;
     }
 };
 
