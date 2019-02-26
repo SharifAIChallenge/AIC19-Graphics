@@ -952,8 +952,8 @@ End.prototype.initialize = function() {
         }
         if (this.entity.name == 'Result') {
             switch (winner) {
-                case 1: this.entity.element.text = 'TEAM 2 WINS!'; break;
-                case 0: this.entity.element.text = 'TEAM 1 WINS!'; break;
+                case 1: this.entity.element.text = 'TEAM 2 WON!'; break;
+                case 0: this.entity.element.text = 'TEAM 1 WON!'; break;
                 case -1: this.entity.element.text = 'DRAW!'; break;
                 default: break;
             }
