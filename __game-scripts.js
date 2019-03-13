@@ -6,6 +6,7 @@ GameHandler.prototype.initialize = function() {
     // initial values
     this.turn = 0;
     this.play = true;
+    console.log('this shit is not working');
 
     this.setTeamNames();
 
